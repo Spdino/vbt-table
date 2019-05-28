@@ -3,6 +3,8 @@ import XEUtils from 'xe-utils'
 export default {
   methods: {
     renderTable({ tableWidth, tableColumn }) {
+      const { tableData } = this.$table;
+
       return (
         <table
           class="vxe-table--body"
@@ -13,8 +15,16 @@ export default {
             width: tableWidth === null ? tableWidth : `${tableWidth}px`
           }}
         >
-          {this.renderColGroup(tableColumn)}
-          <tbody>{this.renderRows(tableColumn)}</tbody>
+          <colgroup>
+            {tableColumn.map((column, columnIndex) => (
+              <col
+                name={column.id}
+                width={column.renderWidth}
+                key={columnIndex}
+              />
+            ))}
+          </colgroup>
+          <tbody>{this.renderRows({ rowLevel: 0, tableData, tableColumn })}</tbody>
           {this.renderEmpty()}
         </table>
       );
@@ -36,36 +46,47 @@ export default {
       }
     },
 
-    renderColGroup(tableColumn) {
-      return (
-        <colgroup>
-          {tableColumn.map((column, columnIndex) => (
-            <col
-              name={column.id}
-              width={column.renderWidth}
-              key={columnIndex}
-            />
-          ))}
-        </colgroup>
-      );
+    renderRows({ rowLevel, tableData, tableColumn }) {
+      const { highlightHoverRow, columnStore, treeConfig, treeExpandeds, selectRow, hoverRow, rowKey, id, overflowX } = this.$table;
+      let { leftList, rightList } = columnStore
+      let rows = []
+      const self = this
+
+      tableData.forEach((row, rowIndex) => {
+        // 优化事件绑定
+        let on = null
+        if (highlightHoverRow && (leftList.length || rightList.length) && overflowX) {
+          on = {
+            mouseover(evnt) {
+              if (row !== hoverRow) {
+                self.$table.triggerHoverEvent(evnt, { row, rowIndex })
+              }
+            }
+          }
+        }
+        rows.push(<tr class={['vxe-body--row', `row--${id}_${rowIndex}`, {
+          [`row--level-${rowLevel}`]: treeConfig,
+          'row--selected': row === selectRow,
+          'row--hover': row === hoverRow
+        }]} key={rowKey || treeConfig ? XEUtils.get(row, rowKey || treeConfig.key) : rowIndex} on={on}>
+          {this.renderColumns({ tableColumn, row, rowIndex })}
+        </tr>)
+        if (treeConfig && treeExpandeds.length) {
+          // 如果是树形表格
+          if (treeExpandeds.indexOf(row) > -1) {
+            rows.push.apply(rows, this.renderRows({ rowLevel: rowLevel + 1, tableData: row[treeConfig.children], tableColumn }))
+          }
+        }
+      })
+
+      return rows
     },
 
-    renderRows(tableColumn) {
-      const { tableData, id } = this.$table;
-
-      return this._l(tableData, (row, rowIndex) => (
-        <tr class={["vxe-body--row", `row--${id}_${rowIndex}`]} key={rowIndex}>
-          {this.renderColumns(tableColumn,row, rowIndex)}
-        </tr>
-      ));
-    },
-
-    renderColumns(tableColumn,row, rowIndex) {
-      const { tableData } = this;
-      const { showAllOverflow,border } = this.$table;
+    renderColumns({ tableColumn, rowLevel, row, rowIndex }) {
+      const { showAllOverflow, border, scrollYLoad, highlightCurrentRow, treeConfig, fixedType } = this.$table;
 
       return this._l(tableColumn, (column, columnIndex) => {
-        const { columnKey, showOverflow,renderWidth } = column;
+        const { columnKey, showOverflow, renderWidth } = column;
         let showEllipsis = (showOverflow || showAllOverflow) === "ellipsis";
         let showTitle = (showOverflow || showAllOverflow) === "title";
         let showTooltip =
@@ -73,12 +94,33 @@ export default {
           showOverflow === "tooltip" ||
           showAllOverflow === true ||
           showAllOverflow === "tooltip";
-          let hasEllipsis = showTitle || showTooltip || showEllipsis
+        let hasEllipsis = showTitle || showTooltip || showEllipsis
+        let tdOns = {}
+        let fixedHiddenColumn = fixedType ? column.fixed !== fixedType : column.fixed
+
+        // 滚动的渲染不支持动态行高
+        if (scrollYLoad && !hasEllipsis) {
+          showEllipsis = hasEllipsis = true
+        }
+        // 优化事件绑定
+        if (showTooltip) {
+          tdOns.mouseover = evnt => {
+            this.$table.triggerTooltipEvent(evnt, { row, column })
+          }
+          tdOns.mouseout = this.$table.clostTooltip
+        }
+        if (highlightCurrentRow ||
+          (treeConfig && (treeConfig.trigger === 'row' || (column.treeNode && treeConfig.trigger === 'cell')))) {
+          tdOns.click = evnt => {
+            this.$table.triggerCellClickEvent(evnt, { row, rowIndex, column, columnIndex, fixed: fixedType, level: rowLevel, cell: evnt.currentTarget })
+          }
+        }
 
         return (
           <th
             class={["vxe-body--column", column.id]}
             key={columnKey || columnIndex}
+            on={tdOns}
           >
             <div
               class={[
@@ -92,15 +134,12 @@ export default {
               attrs={{
                 title: showTitle ? XEUtils.get(row, column.property) : null
               }}
-              style={ {
+              style={{
                 width: hasEllipsis ? `${border ? renderWidth - 1 : renderWidth}px` : null
               }}
             >
               {column.renderCell({
-                row: tableData[rowIndex],
-                rowIndex,
-                column,
-                columnIndex
+                row, rowIndex, column, columnIndex, fixed: fixedType, level: rowLevel, isHidden: fixedHiddenColumn
               })}
             </div>
           </th>

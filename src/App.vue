@@ -1,7 +1,8 @@
 <template>
   <div class="wrap">
     <vxe-table border
-               :tree-config="{key: 'id', children: 'children'}"
+               stripe
+               :tree-config="{key: 'id', children: 'children',trigger:'cell'}"
                size="mini"
                highlight-hover-row
                show-all-overflow

@@ -42,6 +42,8 @@ export default {
       tableHeight: 0,
       // 表头高度
       headerHeight: 0,
+      // 当前 hover 行
+      hoverRow: null,
       // 左侧固定列是否向右滚动了
       scrollLeftToRight: false,
       // 右侧固定列是否向左滚动了
@@ -255,6 +257,96 @@ export default {
       this.tableColumn = visibleColumn;
     },
 
+    clearCurrentRow () {
+      this.selectRow = null
+      this.hoverRow = null
+      return this.$nextTick()
+    },
+
+     /**
+     * 行 hover 事件
+     */
+    triggerHoverEvent (evnt, { row }) {
+      this.hoverRow = row
+    },
+
+    /**
+    * 触发 tooltip 事件
+    */
+    triggerTooltipEvent(evnt, { row, column }) {
+      let { tooltipStore } = this
+      if (tooltipStore.column !== column || tooltipStore.row !== row || !tooltipStore.visible) {
+        this.showTooltip(evnt, UtilTools.getCellValue(row, column.property), column, row)
+      }
+    },
+
+    // 显示 tooltip
+    showTooltip(evnt, content, column, row) {
+      let cell = evnt.currentTarget
+      let wrapperElem = cell.children[0]
+      if (content && wrapperElem.scrollWidth > wrapperElem.clientWidth) {
+        let { tooltipStore, $refs } = this
+        let { top, left } = DomTools.getOffsetPos(cell)
+        let { scrollTop, scrollLeft, visibleWidth } = DomTools.getDomNode()
+        let tipLeft = left
+        Object.assign(tooltipStore, {
+          row,
+          column,
+          content,
+          visible: true,
+          placement: 'top',
+          arrowStyle: { left: '50%' }
+        })
+        return this.$nextTick().then(() => {
+          let tipWrapperElem = $refs.tipWrapper
+          if (tipWrapperElem) {
+            tipLeft = left + Math.floor((cell.offsetWidth - tipWrapperElem.offsetWidth) / 2)
+            tooltipStore.style = {
+              width: `${tipWrapperElem.offsetWidth + 2}px`,
+              top: `${top - tipWrapperElem.offsetHeight - 6}px`,
+              left: `${tipLeft}px`
+            }
+            return this.$nextTick()
+          }
+        }).then(() => {
+          let tipWrapperElem = $refs.tipWrapper
+          if (tipWrapperElem) {
+            let offsetHeight = tipWrapperElem.offsetHeight
+            let offsetWidth = tipWrapperElem.offsetWidth
+            if (top - offsetHeight < scrollTop) {
+              tooltipStore.placement = 'bottom'
+              tooltipStore.style.top = `${top + cell.offsetHeight + 6}px`
+            }
+            if (tipLeft < scrollLeft + 6) {
+              // 超出左边界
+              tipLeft = scrollLeft + 6
+              tooltipStore.arrowStyle.left = `${left > tipLeft + 16 ? left - tipLeft + 16 : 16}px`
+              tooltipStore.style.left = `${tipLeft}px`
+            } else if (left + offsetWidth > scrollLeft + visibleWidth) {
+              // 超出右边界
+              tipLeft = scrollLeft + visibleWidth - offsetWidth - 6
+              tooltipStore.arrowStyle.left = `${offsetWidth - Math.max(Math.floor((tipLeft + offsetWidth - left) / 2), 22)}px`
+              tooltipStore.style.left = `${tipLeft}px`
+            }
+          }
+        })
+      }
+      return this.$nextTick()
+    },
+
+    // 关闭 tooltip
+    clostTooltip() {
+      Object.assign(this.tooltipStore, {
+        row: null,
+        column: null,
+        content: null,
+        style: null,
+        visible: false,
+        placement: null
+      })
+      return this.$nextTick()
+    },
+
     handleDefaultExpand() {
       if (this.treeConfig) {
         this.handleDefaultTreeExpand();
@@ -307,21 +399,20 @@ export default {
         fullData,
         tableData: scrollYLoad
           ? fullData.slice(
-              scrollYStore.startIndex,
-              scrollYStore.startIndex + scrollYStore.renderSize
-            )
+            scrollYStore.startIndex,
+            scrollYStore.startIndex + scrollYStore.renderSize
+          )
           : fullData.slice(0)
       };
     },
 
-        /**
-     * 列点击事件
-     * 如果是单击模式，则激活为编辑状态
-     * 如果是双击模式，则单击后选中状态
-     */
-    triggerCellClickEvent (evnt, params) {
-      let { $el, highlightCurrentRow, editStore, treeConfig, editConfig } = this
-      let { actived } = editStore
+    /**
+ * 列点击事件
+ * 如果是单击模式，则激活为编辑状态
+ * 如果是双击模式，则单击后选中状态
+ */
+    triggerCellClickEvent(evnt, params) {
+      let { $el, highlightCurrentRow, treeConfig } = this
       if (highlightCurrentRow) {
         if (!DomTools.getEventTargetNode(evnt, $el, 'vxe-tree-wrapper').flag) {
           this.selectRow = params.row
@@ -330,38 +421,29 @@ export default {
       if (treeConfig && (treeConfig.trigger === 'row' || (params.column.treeNode && treeConfig.trigger === 'cell'))) {
         this.triggerTreeExpandEvent(evnt, params)
       }
-      if (editConfig) {
-        if (editConfig.trigger === 'click') {
-          if (!actived.args || evnt.currentTarget !== actived.args.cell) {
-            this.triggerValidate().then(() => {
-              this.handleActived(params, evnt)
-            }).catch(e => e)
-          }
-        }
-      }
       UtilTools.emitEvent(this, 'cell-click', [params, evnt])
     },
 
-     /**
-     * 展开行事件
-     */
-    triggerTreeExpandEvent (evnt, { row }) {
+    /**
+    * 展开行事件
+    */
+    triggerTreeExpandEvent(evnt, { row }) {
       return this.toggleTreeExpansion(row)
     },
 
-     /**
-     * 切换展开行
-     */
-    toggleTreeExpansion (row) {
+    /**
+    * 切换展开行
+    */
+    toggleTreeExpansion(row) {
       return this.setTreeExpansion(row)
     },
 
-     /**
-     * 设置展开树形节点，二个参数设置这一行展开与否
-     * 支持单行
-     * 支持多行
-     */
-    setTreeExpansion (rows, expanded) {
+    /**
+    * 设置展开树形节点，二个参数设置这一行展开与否
+    * 支持单行
+    * 支持多行
+    */
+    setTreeExpansion(rows, expanded) {
       let { treeExpandeds, treeConfig } = this
       let { children } = treeConfig
       let isToggle = arguments.length === 1
@@ -386,7 +468,7 @@ export default {
       return this.$nextTick()
     },
 
-    clearTreeExpand () {
+    clearTreeExpand() {
       this.treeExpandeds = []
       return this.$nextTick()
     },
@@ -429,7 +511,7 @@ export default {
       scrollYStore.bottomSpaceHeight = Math.max(
         (fullData.length -
           (scrollYStore.startIndex + scrollYStore.renderSize)) *
-          scrollYStore.rowHeight,
+        scrollYStore.rowHeight,
         0
       );
     },
@@ -438,7 +520,7 @@ export default {
      * 纵向 Y 滚动渲染事件处理
      */
     triggerScrollYEvent: XEUtils.debounce(
-      function(evnt) {
+      function (evnt) {
         let { tableFullData, scrollYStore } = this;
         let {
           startIndex,

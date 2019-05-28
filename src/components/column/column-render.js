@@ -2,23 +2,23 @@ import UtilTools from '../../tools/utils'
 import GlobalConfig from '../../conf'
 
 export default {
-  methods:{
-      /**
-     * 单元格
-     */
-    renderHeader (h, params) {
+  methods: {
+    /**
+   * 单元格
+   */
+    renderHeader(h, params) {
       let { $scopedSlots } = this
       if ($scopedSlots && $scopedSlots.header) {
         return $scopedSlots.header(params)
       }
       return [UtilTools.formatText(params.column.label)]
     },
-    
-    renderCell (params) {
+
+    renderCell(params) {
       let cellValue
       let { $scopedSlots } = this
-      let { row,  column } = params
-      
+      let { row, column } = params
+
       if ($scopedSlots && $scopedSlots.default) {
         return $scopedSlots.default(params)
       }
@@ -26,15 +26,15 @@ export default {
       return [UtilTools.formatText(cellValue)]
     },
 
-    renderTreeCell (h, params) {
-      return this.renderTreeIcon(h, params).concat(this.renderCell(h, params))
+    renderTreeCell(params) {
+      return this.renderTreeIcon(params).concat(this.renderCell(params))
     },
 
     /**
      * 树节点
      */
-    renderTreeIcon (h, params) {
-      console.log("TCL: renderTreeIcon -> params", params)
+    renderTreeIcon(params) {
+      const h = this.$createElement
       let { iconMap } = GlobalConfig
       let { treeConfig, treeExpandeds } = this.$table
       let { row, level } = params
@@ -44,6 +44,7 @@ export default {
       if (!trigger || trigger === 'default') {
         on.click = evnt => this.$table.triggerTreeExpandEvent(evnt, params)
       }
+
       return [
         h('span', {
           class: 'vxe-tree--indent',
