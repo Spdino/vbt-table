@@ -17,11 +17,11 @@ const GlobalConfig = {
   contextMenu: null,
   tooltipTheme: "dark",
   iconMap: {
-    sortAsc: "vxe-sort--asc-icon",
-    sortDesc: "vxe-sort--desc-icon",
-    filter: "vxe-filter--icon",
-    edit: "vxe-edit--icon",
-    tree: "vxe-tree--node-icon"
+    sortAsc: "vbt-sort--asc-icon",
+    sortDesc: "vbt-sort--desc-icon",
+    filter: "vbt-filter--icon",
+    edit: "vbt-edit--icon",
+    tree: "vbt-tree--node-icon"
   }
 };
 

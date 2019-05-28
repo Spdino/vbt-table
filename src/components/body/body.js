@@ -53,7 +53,7 @@ export default {
     return (
       <div
         class={[
-          "vxe-table--body-wrapper",
+          "vbt-table--body-wrapper",
           fixedType ? `fixed--${fixedType}-wrapper` : "body--wrapper"
         ]}
         style={style}
@@ -61,14 +61,14 @@ export default {
       >
         {scrollYLoad ? (
           <div
-            class="vxe-body--top-space"
+            class="vbt-body--top-space"
             style={{ height: `${scrollYStore.topSpaceHeight}px` }}
           />
         ) : null}
         {this.renderTable({ tableWidth, tableColumn })}
         {scrollYLoad ? (
           <div
-            class="vxe-body--bottom-space"
+            class="vbt-body--bottom-space"
             style={{ height: `${scrollYStore.bottomSpaceHeight}px` }}
           />
         ) : null}

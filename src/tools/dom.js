@@ -52,7 +52,7 @@ const DomTools = {
     return { rowIndex, columnIndex }
   },
   getCell ({ rowIndex, column }, tableElem) {
-    let tBodyElem = tableElem.querySelector('.vxe-table--body>tbody')
+    let tBodyElem = tableElem.querySelector('.vbt-table--body>tbody')
     let trElem = tBodyElem.children[rowIndex]
     return trElem.querySelector(`.${column.id}`)
   },

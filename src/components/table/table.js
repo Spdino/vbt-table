@@ -130,7 +130,7 @@ export default {
     this.load(this.data).then(() => {
       if (treeConfig && !(rowKey || treeConfig.key)) {
         throw new Error(
-          "[vxe-table] Tree table must have a unique primary key."
+          "[vbt-table] Tree table must have a unique primary key."
         );
       }
       this.refreshColumn();
@@ -162,7 +162,7 @@ export default {
     return (
       <div
         class={[
-          "vxe-table",
+          "vbt-table",
           size ? `size--${size}` : "",
           {
             "show--head": showHeader,
@@ -177,7 +177,7 @@ export default {
           }
         ]}
       >
-        <div class="'vxe-table-hidden-column'" ref="hideColumn">
+        <div class="'vbt-table-hidden-column'" ref="hideColumn">
           {this.$slots.default}
         </div>
         {showHeader ? (
@@ -199,27 +199,27 @@ export default {
           ? this.renderFixed("right")
           : null}
         <div
-          class="vxe-table--loading"
+          class="vbt-table--loading"
           style={{ display: loading ? "block" : "none" }}
         >
-          <div class="vxe-table--spinner" />
+          <div class="vbt-table--spinner" />
         </div>
-        <div class={[`vxe-table${id}-wrapper`]} ref="tableWrapper">
+        <div class={[`vbt-table${id}-wrapper`]} ref="tableWrapper">
           {tooltipStore.visible ? (
             <div
               class={[
-                "vxe-table--tooltip-wrapper",
+                "vbt-table--tooltip-wrapper",
                 `theme--${tooltipTheme}`,
                 `placement--${tooltipStore.placement}`
               ]}
               style={tooltipStore.style}
               ref="tipWrapper"
             >
-              <div class="vxe-table--tooltip-content">
+              <div class="vbt-table--tooltip-content">
                 {UtilTools.formatText(tooltipStore.content)}
               </div>
               <div
-                class="vxe-table--tooltip-arrow"
+                class="vbt-table--tooltip-arrow"
                 style={tooltipStore.arrowStyle}
               />
             </div>
@@ -414,7 +414,7 @@ export default {
     triggerCellClickEvent(evnt, params) {
       let { $el, highlightCurrentRow, treeConfig } = this
       if (highlightCurrentRow) {
-        if (!DomTools.getEventTargetNode(evnt, $el, 'vxe-tree-wrapper').flag) {
+        if (!DomTools.getEventTargetNode(evnt, $el, 'vbt-tree-wrapper').flag) {
           this.selectRow = params.row
         }
       }

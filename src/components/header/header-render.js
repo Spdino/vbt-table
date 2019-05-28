@@ -5,7 +5,7 @@ export default {
 
       return (
         <div
-          class="vxe-table--repair"
+          class="vbt-table--repair"
           style={{
             width: tableWidth === null ? tableWidth : `${tableWidth}px`
           }}
@@ -56,7 +56,7 @@ export default {
     renderThead() {
       return (
         <thead>
-          <tr class="vxe-header--row">{this.renderThs()}</tr>
+          <tr class="vbt-header--row">{this.renderThs()}</tr>
         </thead>
       );
     },
@@ -81,7 +81,7 @@ export default {
             return (
               <th
                 class={[
-                  "vxe-header--column",
+                  "vbt-header--column",
                   column.id,
                   {
                     [`col--${headerAlign}`]: headerAlign,
@@ -92,7 +92,7 @@ export default {
                 key={columnKey || columnIndex}
               >
                 <div
-                  class="vxe-cell"
+                  class="vbt-cell"
                   title={showTitle ? column.label : null}
                   style={{
                     width: showTitle

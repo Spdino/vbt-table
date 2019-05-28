@@ -24,7 +24,7 @@ export default {
       <div
         class={[
           [
-            "vxe-table--header-wrapper",
+            "vbt-table--header-wrapper",
             fixedType ? `fixed--${fixedType}-wrapper` : "body--wrapper"
           ]
         ]}

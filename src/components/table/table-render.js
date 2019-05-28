@@ -26,7 +26,7 @@ export default {
 
       return (
         <div
-          class={[`vxe-table--fixed-${fixedType}-wrapper`,{
+          class={[`vbt-table--fixed-${fixedType}-wrapper`,{
               "scrolling--middle": isRightFixed
                 ? scrollRightToLeft
                 : scrollLeftToRight

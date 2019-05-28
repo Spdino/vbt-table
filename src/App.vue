@@ -1,6 +1,6 @@
 <template>
   <div class="wrap">
-    <vxe-table border
+    <vbt-table border
                stripe
                :tree-config="{key: 'id', children: 'children',trigger:'cell'}"
                size="mini"
@@ -8,37 +8,37 @@
                show-all-overflow
                max-height="600"
                :data.sync="tableData">
-      <vxe-table-column prop="name"
+      <vbt-table-column prop="name"
                         label="Name"
                         tree-node
                         width="200"
-                        fixed="left"></vxe-table-column>
-      <vxe-table-column prop="sex"
+                        fixed="left"></vbt-table-column>
+      <vbt-table-column prop="sex"
                         label="Sex"
-                        width="200"></vxe-table-column>
-      <vxe-table-column prop="age"
+                        width="200"></vbt-table-column>
+      <vbt-table-column prop="age"
                         label="Age"
-                        width="200"></vxe-table-column>
-      <vxe-table-column prop="role"
+                        width="200"></vbt-table-column>
+      <vbt-table-column prop="role"
                         label="role"
-                        width="200"></vxe-table-column>
-      <vxe-table-column prop="language"
+                        width="200"></vbt-table-column>
+      <vbt-table-column prop="language"
                         label="language"
-                        width="200"></vxe-table-column>
-      <vxe-table-column prop="rate"
+                        width="200"></vbt-table-column>
+      <vbt-table-column prop="rate"
                         label="rate"
                         fixed="right"
-                        width="200"></vxe-table-column>
-      <vxe-table-column prop="address"
+                        width="200"></vbt-table-column>
+      <vbt-table-column prop="address"
                         label="Address"
-                        width="300"></vxe-table-column>
-    </vxe-table>
+                        width="300"></vbt-table-column>
+    </vbt-table>
   </div>
 </template>
 
 <script>
-import vxeTable from './components/table/table.js'
-import vxeTableColumn from './components/column/column.js'
+import vbtTable from './components/table/table.js'
+import vbtTableColumn from './components/column/column.js'
 import XEUtils from 'xe-utils'
 
 function mockData(num, cId) {
@@ -62,7 +62,7 @@ function mockData(num, cId) {
   return list
 }
 export default {
-  components: { vxeTable, vxeTableColumn },
+  components: { vbtTable, vbtTableColumn },
   data() {
     return {
       tableData: mockData(1000)

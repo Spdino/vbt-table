@@ -47,13 +47,13 @@ export default {
 
       return [
         h('span', {
-          class: 'vxe-tree--indent',
+          class: 'vbt-tree--indent',
           style: {
             width: `${level * (indent || 16)}px`
           }
         }),
         h('span', {
-          class: ['vxe-tree-wrapper', {
+          class: ['vbt-tree-wrapper', {
             active: treeExpandeds.indexOf(row) > -1
           }],
           on

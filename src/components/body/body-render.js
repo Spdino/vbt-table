@@ -7,7 +7,7 @@ export default {
 
       return (
         <table
-          class="vxe-table--body"
+          class="vbt-table--body"
           cellspacing="0"
           cellpadding="0"
           border="0"
@@ -37,8 +37,8 @@ export default {
         return null;
       } else {
         return (
-          <div class="vxe-table--empty-block">
-            <span classNmae="vxe-table--empty-text">
+          <div class="vbt-table--empty-block">
+            <span classNmae="vbt-table--empty-text">
               {this.$table.$slots.empty || "暂无数据"}
             </span>
           </div>
@@ -64,7 +64,7 @@ export default {
             }
           }
         }
-        rows.push(<tr class={['vxe-body--row', `row--${id}_${rowIndex}`, {
+        rows.push(<tr class={['vbt-body--row', `row--${id}_${rowIndex}`, {
           [`row--level-${rowLevel}`]: treeConfig,
           'row--selected': row === selectRow,
           'row--hover': row === hoverRow
@@ -118,13 +118,13 @@ export default {
 
         return (
           <th
-            class={["vxe-body--column", column.id]}
+            class={["vbt-body--column", column.id]}
             key={columnKey || columnIndex}
             on={tdOns}
           >
             <div
               class={[
-                "vxe-cell",
+                "vbt-cell",
                 {
                   "c--title": showTitle,
                   "c--tooltip": showTooltip,
