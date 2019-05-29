@@ -23,7 +23,7 @@ export default {
           isRightFixed ? scrollYWidth : 0
         )}px`
       };
-
+      
       return (
         <div
           class={[`vbt-table--fixed-${fixedType}-wrapper`,{

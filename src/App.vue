@@ -12,10 +12,17 @@
                         label="Name"
                         tree-node
                         width="200"
-                        fixed="left"></vbt-table-column>
+                        fixed="left">
+      </vbt-table-column>
       <vbt-table-column prop="sex"
                         label="Sex"
-                        width="200"></vbt-table-column>
+                        width="200">
+        <template slot-scope="scoped">
+          <el-input v-model="scoped.row['sex']"
+                    size="mini"
+                    placeholder="111"></el-input>
+        </template>
+      </vbt-table-column>
       <vbt-table-column prop="age"
                         label="Age"
                         width="200"></vbt-table-column>
@@ -27,10 +34,10 @@
                         width="200"></vbt-table-column>
       <vbt-table-column prop="rate"
                         label="rate"
-                        fixed="right"
                         width="200"></vbt-table-column>
       <vbt-table-column prop="address"
                         label="Address"
+                        fixed="right"
                         width="300"></vbt-table-column>
     </vbt-table>
   </div>
@@ -53,7 +60,7 @@ function mockData(num, cId) {
       role: 'role_' + fullIndex,
       language: index % 2 === 0 ? 'zh_CN' : 'en_US',
       name: 'name_' + fullIndex,
-      sex: index % 3 ? '0' : '1',
+      sex: index % 3 ? '男' : '女',
       age: XEUtils.random(18, 35),
       rate: XEUtils.random(0, 5),
       address: `地址 地址地址 地址地址 址地址址地址 址地址 址地址  址地址 址地址  址地址 址地址址地址址地址 地址${index}`

@@ -1,4 +1,4 @@
-import XEUtils from 'xe-utils'
+import XEUtils from "xe-utils";
 
 export default {
   methods: {
@@ -24,7 +24,9 @@ export default {
               />
             ))}
           </colgroup>
-          <tbody>{this.renderRows({ rowLevel: 0, tableData, tableColumn })}</tbody>
+          <tbody>
+            {this.renderRows({ rowLevel: 0, tableData, tableColumn })}
+          </tbody>
           {this.renderEmpty()}
         </table>
       );
@@ -47,43 +49,85 @@ export default {
     },
 
     renderRows({ rowLevel, tableData, tableColumn }) {
-      const { highlightHoverRow, columnStore, treeConfig, treeExpandeds, selectRow, hoverRow, rowKey, id, overflowX } = this.$table;
-      let { leftList, rightList } = columnStore
-      let rows = []
-      const self = this
+      const {
+        highlightHoverRow,
+        columnStore,
+        treeConfig,
+        treeExpandeds,
+        selectRow,
+        hoverRow,
+        rowKey,
+        id,
+        overflowX
+      } = this.$table;
+      let { leftList, rightList } = columnStore;
+      let rows = [];
+      const self = this;
 
       tableData.forEach((row, rowIndex) => {
         // 优化事件绑定
-        let on = null
-        if (highlightHoverRow && (leftList.length || rightList.length) && overflowX) {
+        let on = null;
+        if (
+          highlightHoverRow &&
+          (leftList.length || rightList.length) &&
+          overflowX
+        ) {
           on = {
             mouseover(evnt) {
               if (row !== hoverRow) {
-                self.$table.triggerHoverEvent(evnt, { row, rowIndex })
+                self.$table.triggerHoverEvent(evnt, { row, rowIndex });
               }
             }
-          }
+          };
         }
-        rows.push(<tr class={['vbt-body--row', `row--${id}_${rowIndex}`, {
-          [`row--level-${rowLevel}`]: treeConfig,
-          'row--selected': row === selectRow,
-          'row--hover': row === hoverRow
-        }]} key={rowKey || treeConfig ? XEUtils.get(row, rowKey || treeConfig.key) : rowIndex} on={on}>
-          {this.renderColumns({ tableColumn, row, rowIndex })}
-        </tr>)
+        rows.push(
+          <tr
+            class={[
+              "vbt-body--row",
+              `row--${id}_${rowIndex}`,
+              {
+                [`row--level-${rowLevel}`]: treeConfig,
+                "row--selected": row === selectRow,
+                "row--hover": row === hoverRow
+              }
+            ]}
+            key={
+              rowKey || treeConfig
+                ? XEUtils.get(row, rowKey || treeConfig.key)
+                : rowIndex
+            }
+            on={on}
+          >
+            {this.renderColumns({ tableColumn, row, rowIndex })}
+          </tr>
+        );
         if (treeConfig && treeExpandeds.length) {
           // 如果是树形表格
           if (treeExpandeds.indexOf(row) > -1) {
-            rows.push.apply(rows, this.renderRows({ rowLevel: rowLevel + 1, tableData: row[treeConfig.children], tableColumn }))
+            rows.push.apply(
+              rows,
+              this.renderRows({
+                rowLevel: rowLevel + 1,
+                tableData: row[treeConfig.children],
+                tableColumn
+              })
+            );
           }
         }
-      })
+      });
 
-      return rows
+      return rows;
     },
 
     renderColumns({ tableColumn, rowLevel, row, rowIndex }) {
-      const { showAllOverflow, border, scrollYLoad, highlightCurrentRow, treeConfig, fixedType } = this.$table;
+      const {
+        showAllOverflow,
+        border,
+        scrollYLoad,
+        highlightCurrentRow,
+        treeConfig,
+        fixedType
+      } = this.$table;
 
       return this._l(tableColumn, (column, columnIndex) => {
         const { columnKey, showOverflow, renderWidth } = column;
@@ -94,33 +138,48 @@ export default {
           showOverflow === "tooltip" ||
           showAllOverflow === true ||
           showAllOverflow === "tooltip";
-        let hasEllipsis = showTitle || showTooltip || showEllipsis
-        let tdOns = {}
-        let fixedHiddenColumn = fixedType ? column.fixed !== fixedType : column.fixed
+        let hasEllipsis = showTitle || showTooltip || showEllipsis;
+        let tdOns = {};
+        let fixedHiddenColumn = fixedType
+          ? column.fixed !== fixedType
+          : column.fixed;
 
         // 滚动的渲染不支持动态行高
         if (scrollYLoad && !hasEllipsis) {
-          showEllipsis = hasEllipsis = true
+          showEllipsis = hasEllipsis = true;
         }
         // 优化事件绑定
         if (showTooltip) {
           tdOns.mouseover = evnt => {
-            this.$table.triggerTooltipEvent(evnt, { row, column })
-          }
-          tdOns.mouseout = this.$table.clostTooltip
+            this.$table.triggerTooltipEvent(evnt, { row, column });
+          };
+          tdOns.mouseout = this.$table.clostTooltip;
         }
-        if (highlightCurrentRow ||
-          (treeConfig && (treeConfig.trigger === 'row' || (column.treeNode && treeConfig.trigger === 'cell')))) {
+        if (
+          highlightCurrentRow ||
+          (treeConfig &&
+            (treeConfig.trigger === "row" ||
+              (column.treeNode && treeConfig.trigger === "cell")))
+        ) {
           tdOns.click = evnt => {
-            this.$table.triggerCellClickEvent(evnt, { row, rowIndex, column, columnIndex, fixed: fixedType, level: rowLevel, cell: evnt.currentTarget })
-          }
+            this.$table.triggerCellClickEvent(evnt, {
+              row,
+              rowIndex,
+              column,
+              columnIndex,
+              fixed: fixedType,
+              level: rowLevel,
+              cell: evnt.currentTarget
+            });
+          };
         }
 
         return (
-          <th
+          <td
             class={["vbt-body--column", column.id]}
             key={columnKey || columnIndex}
             on={tdOns}
+            style={{height:'41px'}}
           >
             <div
               class={[
@@ -135,14 +194,22 @@ export default {
                 title: showTitle ? XEUtils.get(row, column.property) : null
               }}
               style={{
-                width: hasEllipsis ? `${border ? renderWidth - 1 : renderWidth}px` : null
+                width: hasEllipsis
+                  ? `${border ? renderWidth - 1 : renderWidth}px`
+                  : null
               }}
             >
               {column.renderCell({
-                row, rowIndex, column, columnIndex, fixed: fixedType, level: rowLevel, isHidden: fixedHiddenColumn
+                row,
+                rowIndex,
+                column,
+                columnIndex,
+                fixed: fixedType,
+                level: rowLevel,
+                isHidden: fixedHiddenColumn
               })}
             </div>
-          </th>
+          </td>
         );
       });
     }
