@@ -74,7 +74,7 @@ export default {
     return {
       tableData: mockData(1000)
     }
-  }
+  },
 }
 </script>
 

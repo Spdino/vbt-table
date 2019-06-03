@@ -33,6 +33,7 @@ export default {
       id: XEUtils.uniqueId(),
       // 渲染中的数据
       tableData: [],
+      tableFullData:[],
       // 完整所有列
       tableFullColumn: [],
       // 渲染的列
@@ -175,7 +176,8 @@ export default {
     let { leftList, rightList } = columnStore;
 
     return (
-      <div
+      <div>
+        <div
         class={[
           "vbt-table",
           size ? `size--${size}` : "",
@@ -190,34 +192,33 @@ export default {
             "t--border": border,
             "t--highlight": highlightHoverRow
           }
-        ]}
-      >
-        <div class="'vbt-table-hidden-column'" ref="hideColumn">
-          {this.$slots.default}
-        </div>
-        {showHeader ? (
-          <table-header
-            ref="tableHeader"
+        ]}>
+          <div class="'vbt-table-hidden-column'" ref="hideColumn">
+            {this.$slots.default}
+          </div>
+          {showHeader ? 
+            <table-header
+              ref="tableHeader"
+              tableData={tableData}
+              tableColumn={tableColumn}
+            />
+          : null}
+          <table-body
+            ref="tableBody"
             tableData={tableData}
             tableColumn={tableColumn}
           />
-        ) : null}
-        <table-body
-          ref="tableBody"
-          tableData={tableData}
-          tableColumn={tableColumn}
-        />
-        {leftList && leftList.length && overflowX
-          ? this.renderFixed("left")
-          : null}
-        {rightList && rightList.length && overflowX
-          ? this.renderFixed("right")
-          : null}
-        <div
-          class="vbt-table--loading"
-          style={{ display: loading ? "block" : "none" }}
-        >
-          <div class="vbt-table--spinner" />
+          {leftList && leftList.length && overflowX
+            ? this.renderFixed("left")
+            : null}
+          {rightList && rightList.length && overflowX
+            ? this.renderFixed("right")
+            : null}
+          <div
+            class="vbt-table--loading"
+            style={{ display: loading ? "block" : "none" }}>
+            <div class="vbt-table--spinner" />
+          </div>
         </div>
         <div class={[`vbt-table${id}-wrapper`]} ref="tableWrapper">
           {tooltipStore.visible ? (
@@ -240,7 +241,7 @@ export default {
             </div>
           ) : null}
         </div>
-      </div>
+    </div>
     );
   },
 
@@ -304,69 +305,58 @@ export default {
       }
     },
 
-    // 显示 tooltip
-    showTooltip(evnt, content, column, row) {
-      let cell = evnt.currentTarget;
-      let wrapperElem = cell.children[0];
+     // 显示 tooltip
+     showTooltip (evnt, content, column, row) {
+      let cell = evnt.currentTarget
+      let wrapperElem = cell.children[0]
       if (content && wrapperElem.scrollWidth > wrapperElem.clientWidth) {
-        let { tooltipStore, $refs } = this;
-        let { top, left } = DomTools.getOffsetPos(cell);
-        let { scrollTop, scrollLeft, visibleWidth } = DomTools.getDomNode();
-        let tipLeft = left;
+        let { tooltipStore, $refs } = this
+        let { top, left } = DomTools.getOffsetPos(cell)
+        let { scrollTop, scrollLeft, visibleWidth } = DomTools.getDomNode()
+        let tipLeft = left
         Object.assign(tooltipStore, {
           row,
           column,
           content,
           visible: true,
-          placement: "top",
-          arrowStyle: { left: "50%" }
-        });
-        return this.$nextTick()
-          .then(() => {
-            let tipWrapperElem = $refs.tipWrapper;
-            if (tipWrapperElem) {
-              console.log();
-              tipLeft =
-                left +
-                Math.floor((cell.offsetWidth - tipWrapperElem.offsetWidth) / 2);
-              tooltipStore.style = {
-                width: `${tipWrapperElem.offsetWidth + 2}px`,
-                top: `${top - tipWrapperElem.offsetHeight - 30}px`,
-                left: `${tipLeft}px`
-              };
-              return this.$nextTick();
+          placement: 'top',
+          arrowStyle: { left: '50%' }
+        })
+        return this.$nextTick().then(() => {
+          let tipWrapperElem = $refs.tipWrapper
+          if (tipWrapperElem) {
+            tipLeft = left + Math.floor((cell.offsetWidth - tipWrapperElem.offsetWidth) / 2)
+            tooltipStore.style = {
+              width: `${tipWrapperElem.offsetWidth + 2}px`,
+              top: `${top - tipWrapperElem.offsetHeight - 6}px`,
+              left: `${tipLeft}px`
             }
-          })
-          .then(() => {
-            let tipWrapperElem = $refs.tipWrapper;
-            if (tipWrapperElem) {
-              let offsetHeight = tipWrapperElem.offsetHeight;
-              let offsetWidth = tipWrapperElem.offsetWidth;
-              if (top - offsetHeight < scrollTop) {
-                tooltipStore.placement = "bottom";
-                tooltipStore.style.top = `${top + cell.offsetHeight + 6}px`;
-              }
-              if (tipLeft < scrollLeft + 6) {
-                // 超出左边界
-                tipLeft = scrollLeft + 6;
-                tooltipStore.arrowStyle.left = `${
-                  left > tipLeft + 16 ? left - tipLeft + 16 : 16
-                }px`;
-                tooltipStore.style.left = `${tipLeft}px`;
-              } else if (left + offsetWidth > scrollLeft + visibleWidth) {
-                // 超出右边界
-                tipLeft = scrollLeft + visibleWidth - offsetWidth - 80;
-                tooltipStore.arrowStyle.left = `${offsetWidth -
-                  Math.max(
-                    Math.floor((tipLeft + offsetWidth - left) / 2),
-                    22
-                  )}px`;
-                tooltipStore.style.left = `${tipLeft}px`;
-              }
+            return this.$nextTick()
+          }
+        }).then(() => {
+          let tipWrapperElem = $refs.tipWrapper
+          if (tipWrapperElem) {
+            let offsetHeight = tipWrapperElem.offsetHeight
+            let offsetWidth = tipWrapperElem.offsetWidth
+            if (top - offsetHeight < scrollTop) {
+              tooltipStore.placement = 'bottom'
+              tooltipStore.style.top = `${top + cell.offsetHeight + 6}px`
             }
-          });
+            if (tipLeft < scrollLeft + 6) {
+              // 超出左边界
+              tipLeft = scrollLeft + 6
+              tooltipStore.arrowStyle.left = `${left > tipLeft + 16 ? left - tipLeft + 16 : 16}px`
+              tooltipStore.style.left = `${tipLeft}px`
+            } else if (left + offsetWidth > scrollLeft + visibleWidth) {
+              // 超出右边界
+              tipLeft = scrollLeft + visibleWidth - offsetWidth - 6
+              tooltipStore.arrowStyle.left = `${offsetWidth - Math.max(Math.floor((tipLeft + offsetWidth - left) / 2), 22)}px`
+              tooltipStore.style.left = `${tipLeft}px`
+            }
+          }
+        })
       }
-      return this.$nextTick();
+      return this.$nextTick()
     },
 
     // 关闭 tooltip
@@ -483,6 +473,7 @@ export default {
      * 支持多行
      */
     setTreeExpansion(rows, expanded) {
+      console.log("TCL: setTreeExpansion -> rows", rows)
       let { treeExpandeds, treeConfig } = this;
       let { children } = treeConfig;
       let isToggle = arguments.length === 1;

@@ -1,6 +1,5 @@
 import renderMethods from "./body-render";
 
-let scrollProcessTimeout;
 let updateLeftScrollingTimeput;
 
 export default {
@@ -122,15 +121,6 @@ export default {
           elem2.onscroll = null;
           elem2.scrollTop = scrollTop;
         }
-        clearTimeout(scrollProcessTimeout);
-        scrollProcessTimeout = setTimeout(function() {
-          if (elem1) {
-            elem1.onscroll = elem1._onscroll;
-          }
-          if (elem2) {
-            elem2.onscroll = elem2._onscroll;
-          }
-        }, 200);
       }
     }
   }
