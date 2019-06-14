@@ -1,5 +1,5 @@
 {
-  "name": "vue-tree-bigdata-table",
+  "name": "vbt-table",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,9 +9,8 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
-    "element-ui": "^2.8.2",
-    "vue": "^2.6.6",
-    "xe-utils": "^1.8.25"
+    "element-ui": "^2.9.1",
+    "vue": "^2.6.6"
   },
   "devDependencies": {
     "@vue/babel-helper-vue-jsx-merge-props": "^1.0.0",

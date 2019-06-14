@@ -3299,10 +3299,10 @@ elegant-spinner@^1.0.1:
   resolved "http://registry.npm.taobao.org/elegant-spinner/download/elegant-spinner-1.0.1.tgz#db043521c95d7e303fd8f345bedc3349cfb0729e"
   integrity sha1-2wQ1IcldfjA/2PNFvtwzSc+wcp4=
 
-element-ui@^2.8.2:
-  version "2.8.2"
-  resolved "https://registry.npm.taobao.org/element-ui/download/element-ui-2.8.2.tgz#21a7a4cb92616b0f8b75d4d4e637d3a1cd8c09de"
-  integrity sha1-Iaeky5Jhaw+LddTU5jfToc2MCd4=
+element-ui@^2.9.1:
+  version "2.9.1"
+  resolved "https://registry.npm.taobao.org/element-ui/download/element-ui-2.9.1.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Felement-ui%2Fdownload%2Felement-ui-2.9.1.tgz#a05f2e76023d529ba0dfa2d03ae16e5134b20c4e"
+  integrity sha1-oF8udgI9Upug36LQOuFuUTSyDE4=
   dependencies:
     async-validator "~1.8.1"
     babel-helper-vue-jsx-merge-props "^2.0.0"
@@ -9656,11 +9656,6 @@ ws@^6.0.0, ws@^6.1.2:
   integrity sha1-W1yIAK+rkl6UzLKdFTyNAsF3bvk=
   dependencies:
     async-limiter "~1.0.0"
-
-xe-utils@^1.8.25:
-  version "1.8.25"
-  resolved "https://registry.npm.taobao.org/xe-utils/download/xe-utils-1.8.25.tgz#4b608a4a8dfb16121da6f5dc7f3438080ad1c244"
-  integrity sha1-S2CKSo37FhIdpvXcfzQ4CArRwkQ=
 
 xml-name-validator@^3.0.0:
   version "3.0.0"

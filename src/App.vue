@@ -2,17 +2,21 @@
   <div class="wrap">
     <vbt-table border
                stripe
-               :tree-config="{key: 'id', children: 'children',trigger:'cell'}"
+               row-key="id"
                size="mini"
+               lazy
+    :load="load"
                highlight-hover-row
-               show-all-overflow
                max-height="600"
-               :data.sync="tableData">
-      <vbt-table-column prop="name"
-                        label="Name"
-                        tree-node
+               :data="tableData">
+      <vbt-table-column prop="id"
+                        label="ID"
                         width="200"
                         fixed="left">
+      </vbt-table-column>
+      <vbt-table-column prop="name"
+                        label="Name"
+                        width="200">
       </vbt-table-column>
       <vbt-table-column prop="sex"
                         label="Sex"
@@ -38,15 +42,16 @@
       <vbt-table-column prop="address"
                         label="Address"
                         fixed="right"
-                        width="300"></vbt-table-column>
+                        show-overflow-tooltip
+                        min-width="300"></vbt-table-column>
     </vbt-table>
   </div>
 </template>
 
 <script>
-import vbtTable from './components/table/table.js'
-import vbtTableColumn from './components/column/column.js'
-import XEUtils from 'xe-utils'
+import vbtTable from './bigTreeTable/table'
+import vbtTableColumn from './bigTreeTable/table-column.js'
+import { setTimeout } from 'timers';
 
 function mockData(num, cId) {
   let fullIndex = 1
@@ -56,13 +61,14 @@ function mockData(num, cId) {
     cId && (cId = Number(cId) + 1)
     list.push({
       id: cId || fullIndex,
-      children: !cId ? mockData(30, `${fullIndex}0000000`) : [],
+      hasChildren:true,
+      // children: !cId ? mockData(30, `${fullIndex}0000000`) : [],
       role: 'role_' + fullIndex,
       language: index % 2 === 0 ? 'zh_CN' : 'en_US',
       name: 'name_' + fullIndex,
       sex: index % 3 ? '男' : '女',
-      age: XEUtils.random(18, 35),
-      rate: XEUtils.random(0, 5),
+      age: 18,
+      rate: 5,
       address: `地址 地址地址 地址地址 址地址址地址 址地址 址地址  址地址 址地址  址地址 址地址址地址址地址 地址${index}`
     })
   }
@@ -70,11 +76,21 @@ function mockData(num, cId) {
 }
 export default {
   components: { vbtTable, vbtTableColumn },
+
   data() {
     return {
       tableData: mockData(1000)
     }
   },
+
+  methods:{
+    load(row,resolve) {
+      setTimeout(() => {
+        resolve(mockData(30, `${row.id}0000000`))
+      },1000)
+      
+    }
+  }
 }
 </script>
 
