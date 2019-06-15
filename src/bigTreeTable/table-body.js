@@ -411,7 +411,7 @@ export default {
               $index
             }
             if (cellIndex === firstDefaultColumnIndex && treeRowData) {
-              data.treeNode = { ...treeRowData }
+              data.treeNode = treeRowData
               data.treeNode.indent = treeRowData.level * treeIndent
             }
             return (

@@ -51,17 +51,16 @@
 <script>
 import vbtTable from './bigTreeTable/table'
 import vbtTableColumn from './bigTreeTable/table-column.js'
-import { setTimeout } from 'timers';
 
 function mockData(num, cId) {
-  let fullIndex = 1
+  let fullIndex = 0
   const list = []
   for (let index = 0; index < num; index++) {
     fullIndex++
     cId && (cId = Number(cId) + 1)
     list.push({
       id: cId || fullIndex,
-      hasChildren:true,
+      hasChildren: cId > 1000000 ? false :true,
       // children: !cId ? mockData(30, `${fullIndex}0000000`) : [],
       role: 'role_' + fullIndex,
       language: index % 2 === 0 ? 'zh_CN' : 'en_US',
@@ -86,9 +85,8 @@ export default {
   methods:{
     load(row,resolve) {
       setTimeout(() => {
-        resolve(mockData(30, `${row.id}0000000`))
+        resolve(mockData(30, `${row.id}000`))
       },1000)
-      
     }
   }
 }
