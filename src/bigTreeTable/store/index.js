@@ -8,7 +8,7 @@ Watcher.prototype.mutations = {
     states._data = data
 
     this.execQuery()
-    if (dataInstanceChanged) {
+    if (dataInstanceChanged && states.scrollYLoad) {
       this.execYload(data)
     }
     // 数据变化，更新部分数据。

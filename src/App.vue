@@ -5,7 +5,8 @@
                row-key="id"
                size="mini"
                lazy
-    :load="load"
+               isBigData
+               :load="load"
                highlight-hover-row
                max-height="600"
                :data="tableData">
@@ -60,7 +61,7 @@ function mockData(num, cId) {
     cId && (cId = Number(cId) + 1)
     list.push({
       id: cId || fullIndex,
-      hasChildren: cId > 1000000 ? false :true,
+      hasChildren: cId > 1000000 ? false : true,
       // children: !cId ? mockData(30, `${fullIndex}0000000`) : [],
       role: 'role_' + fullIndex,
       language: index % 2 === 0 ? 'zh_CN' : 'en_US',
@@ -78,15 +79,15 @@ export default {
 
   data() {
     return {
-      tableData: mockData(1000)
+      tableData: mockData(10)
     }
   },
 
-  methods:{
-    load(row,resolve) {
+  methods: {
+    load(row, resolve) {
       setTimeout(() => {
         resolve(mockData(30, `${row.id}000`))
-      },1000)
+      }, 1000)
     }
   }
 }

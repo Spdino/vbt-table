@@ -441,6 +441,7 @@ export default {
       const { isRowExpanded, assertRowKey } = store
       const { rowKey, childrenColumnName,lazyColumnIdentifier, treeData } = store.states
 
+      
       if (this.hasExpandColumn && isRowExpanded(row)) {
         const renderExpanded = this.table.renderExpanded
         const tr = this.rowRender(row, $index)
