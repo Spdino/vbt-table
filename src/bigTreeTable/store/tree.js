@@ -20,15 +20,22 @@ export default {
     initParentTreeData(data) {
       const { initParentFunc, rowKey } = this.table;
       const {treeData} = this.states
-
+      const res = {}
+      
       data.forEach(row => {
-        treeData[row[rowKey]] = {
+        const id = row[rowKey]
+         res[id] = {
           expanded: false,
           level: 0
-        };
+        }
+        if(treeData[id]) {
+          res[id].loading = treeData[id].loading
+          res[id].loaded = treeData[id].loaded
+        }
 
         if (initParentFunc) initParentFunc(row);
       });
+      this.states.treeData = res
 
       return data;
     },

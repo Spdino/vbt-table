@@ -195,10 +195,6 @@ export default {
       }
     },
 
-    initParentFunc: Function,
-
-    formateChildFunc: Function,
-
     size: String,
 
     width: [String, Number],
@@ -287,9 +283,13 @@ export default {
 
     load: Function,
 
+    isBigData:Boolean,
+
     isTreeTable:Boolean,
 
-    isBigData:Boolean
+    initParentFunc: Function,
+
+    formateChildFunc: Function,
   },
 
   components: {
@@ -593,7 +593,8 @@ export default {
       lazy: this.lazy,
       lazyColumnIdentifier: hasChildren,
       childrenColumnName: children,
-      scrollYLoad:this.isBigData
+      scrollYLoad:this.isBigData,
+      isTreeTable:this.isTreeTable
     })
     const layout = new TableLayout({
       store: this.store,

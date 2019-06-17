@@ -16,7 +16,7 @@ export default {
           topSpaceHeight: 0,
           bottomSpaceHeight: 0
         },
-        scrollYLoad: true,
+        scrollYLoad: false,
         yFulldatas: [],
         tableBodyElem: null
       }
@@ -156,15 +156,17 @@ export default {
       this.states.data = datas;
     },
 
-    uptateYfullData(row, isExpanded) {
+    uptateYfullData(row, isExpanded,isChild) {
       const {
         data,
-        yFulldatas,
+        scrollYLoad,
+        isTreeTable,
         childrenColumnName,
         lazyTreeNodeMap,
         scrollYStore,
         treeData
       } = this.states;
+      const yFulldatas = isTreeTable && !scrollYLoad ? data : this.states.yFulldatas
       const { formateChildFunc, rowKey } = this.table;
       const parentId = getRowIdentity(row, rowKey);
       const TreeNodeMap = lazyTreeNodeMap[parentId] || row[childrenColumnName];
@@ -182,21 +184,38 @@ export default {
         if (isExpanded) {
           TreeNodeMap.forEach(item => {
             const id = item[rowKey];
-            treeData[id] = {
+            const res = {
               parent: row,
               level: treeData[parentId].level + 1,
               expanded: false
-            };
+            }
+            if(id && treeData[id]) {
+              res.loading = treeData[id].loading
+              res.loaded = treeData[id].loaded
+            }
+            this.$set(treeData,id,res)
             if (formateChildFunc) formateChildFunc(item, row);
 
             realIndex++;
             yFulldatas.splice(realIndex, 0, item);
           });
         } else {
-          yFulldatas.splice(realIndex + 1, TreeNodeMap.length);
+          if(!isChild) {
+            realIndex+=1
+          }
+          yFulldatas.splice(realIndex, TreeNodeMap.length);
+          TreeNodeMap.forEach(item => {
+            const id = item[rowKey];
+            if(id && treeData[id] && treeData[id].expanded === true) {
+              this.uptateYfullData(item,false,true)
+            }
+          })
+          
         }
 
-        this.getTableData();
+        if(scrollYLoad) {
+          this.getTableData();
+        }
       }
     }
   }

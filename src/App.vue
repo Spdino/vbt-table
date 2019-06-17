@@ -4,8 +4,8 @@
                stripe
                row-key="id"
                size="mini"
-               lazy
                isBigData
+               lazy
                :load="load"
                highlight-hover-row
                max-height="600"
@@ -22,29 +22,29 @@
       <vbt-table-column prop="sex"
                         label="Sex"
                         width="200">
-        <template slot-scope="scoped">
-          <el-input v-model="scoped.row['sex']"
-                    size="mini"
-                    placeholder="111"></el-input>
-        </template>
       </vbt-table-column>
       <vbt-table-column prop="age"
                         label="Age"
-                        width="200"></vbt-table-column>
+                        width="200">
+      </vbt-table-column>
       <vbt-table-column prop="role"
                         label="role"
-                        width="200"></vbt-table-column>
+                        width="200">
+      </vbt-table-column>
       <vbt-table-column prop="language"
                         label="language"
-                        width="200"></vbt-table-column>
+                        width="200">
+      </vbt-table-column>
       <vbt-table-column prop="rate"
                         label="rate"
-                        width="200"></vbt-table-column>
+                        width="200">
+      </vbt-table-column>
       <vbt-table-column prop="address"
                         label="Address"
                         fixed="right"
                         show-overflow-tooltip
-                        min-width="300"></vbt-table-column>
+                        min-width="300">
+      </vbt-table-column>
     </vbt-table>
   </div>
 </template>
@@ -79,7 +79,7 @@ export default {
 
   data() {
     return {
-      tableData: mockData(10)
+      tableData: mockData(1000)
     }
   },
 

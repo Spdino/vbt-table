@@ -8,8 +8,16 @@ Watcher.prototype.mutations = {
     states._data = data
 
     this.execQuery()
-    if (dataInstanceChanged && states.scrollYLoad) {
-      this.execYload(data)
+    if (dataInstanceChanged ) {
+      if(states.scrollYLoad) {
+        if(states.isTreeTable) {
+          states.isTreeTable = false
+          console.warn('[vbt-table]:isBigdata自动支持树形表格,不需要额外添加isTreeTable')
+        }
+        this.execYload(data)
+      }else if(states.isTreeTable) {
+        states.data = this.initParentTreeData(data)
+      }
     }
     // 数据变化，更新部分数据。
     // 没有使用 computed，而是手动更新部分数据 https://github.com/vuejs/vue/issues/6660#issuecomment-331417140
