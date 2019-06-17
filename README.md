@@ -64,16 +64,16 @@
 ### 特性
 ##### 1.大数据支持
 - 效果
-
+![images command](public/1.gif)
 
 ##### 2.大数据树形表格支持
 - 效果
-
+![images command](public/2.gif)
 
 
 ##### 3.大数据树形表格懒加载支持
 - 效果
-
+![images command](public/3.gif)
 
 
 ```
