@@ -26,7 +26,6 @@ export default {
   methods: {
     execYload(datas) {
       this.states.yFulldatas = datas;
-
       this.getTableData(true);
     },
 
@@ -37,21 +36,19 @@ export default {
     // 计算滚动渲染相关数据
     computeScrollLoad() {
       const { scrollYLoad, scrollYStore, tableBodyElem } = this.states;
+      if (!scrollYLoad || scrollYStore.rowHeight || scrollYStore.visibleSize)
+        return;
 
       // 计算 Y 逻辑
-      if (scrollYLoad) {
-        if (scrollYStore.rowHeight) return;
-
-        const firstTrElem = tableBodyElem.querySelector("tbody>tr");
-        if (firstTrElem) {
-          scrollYStore.rowHeight = firstTrElem.clientHeight;
-        }
-        scrollYStore.visibleSize = Math.ceil(
-          tableBodyElem.clientHeight / scrollYStore.rowHeight
-        );
-
-        this.updateScrollYSpace();
+      const firstTrElem = tableBodyElem.querySelector("tbody>tr");
+      if (firstTrElem) {
+        scrollYStore.rowHeight = firstTrElem.clientHeight;
       }
+      scrollYStore.visibleSize = Math.ceil(
+        tableBodyElem.clientHeight / scrollYStore.rowHeight
+      );
+
+      this.updateScrollYSpace();
     },
 
     /**
@@ -140,23 +137,21 @@ export default {
 
     getTableData(isUpdate) {
       const { scrollYStore } = this.states;
-      let yFulldatas = this.states.yFulldatas;
-
-      let datas;
+      let { yFulldatas } = this.states;
 
       this.updateScrollYSpace();
+
       if (isUpdate) {
         yFulldatas = this.initParentTreeData(yFulldatas);
       }
-      datas = yFulldatas.slice(
+
+      this.states.data = yFulldatas.slice(
         scrollYStore.startIndex,
         scrollYStore.startIndex + scrollYStore.renderSize
       );
-
-      this.states.data = datas;
     },
 
-    uptateYfullData(row, isExpanded,isChild) {
+    uptateYfullData(row, isExpanded, isChild) {
       const {
         data,
         scrollYLoad,
@@ -166,7 +161,8 @@ export default {
         scrollYStore,
         treeData
       } = this.states;
-      const yFulldatas = isTreeTable && !scrollYLoad ? data : this.states.yFulldatas
+      const yFulldatas =
+        isTreeTable && !scrollYLoad ? data : this.states.yFulldatas;
       const { formateChildFunc, rowKey } = this.table;
       const parentId = getRowIdentity(row, rowKey);
       const TreeNodeMap = lazyTreeNodeMap[parentId] || row[childrenColumnName];
@@ -188,32 +184,31 @@ export default {
               parent: row,
               level: treeData[parentId].level + 1,
               expanded: false
+            };
+            if (id && treeData[id]) {
+              res.loading = treeData[id].loading;
+              res.loaded = treeData[id].loaded;
             }
-            if(id && treeData[id]) {
-              res.loading = treeData[id].loading
-              res.loaded = treeData[id].loaded
-            }
-            this.$set(treeData,id,res)
-            if (formateChildFunc) formateChildFunc(item, row);
+            this.$set(treeData, id, res);
+            if (formateChildFunc) formateChildFunc(item, row, treeData);
 
             realIndex++;
             yFulldatas.splice(realIndex, 0, item);
           });
         } else {
-          if(!isChild) {
-            realIndex+=1
+          if (!isChild) {
+            realIndex += 1;
           }
           yFulldatas.splice(realIndex, TreeNodeMap.length);
           TreeNodeMap.forEach(item => {
             const id = item[rowKey];
-            if(id && treeData[id] && treeData[id].expanded === true) {
-              this.uptateYfullData(item,false,true)
+            if (id && treeData[id] && treeData[id].expanded === true) {
+              this.uptateYfullData(item, false, true);
             }
-          })
-          
+          });
         }
 
-        if(scrollYLoad) {
+        if (scrollYLoad) {
           this.getTableData();
         }
       }

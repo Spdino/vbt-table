@@ -33,7 +33,7 @@ export default {
           res[id].loaded = treeData[id].loaded
         }
 
-        if (initParentFunc) initParentFunc(row);
+        if (initParentFunc) initParentFunc(row,treeData);
       });
       this.states.treeData = res
 
