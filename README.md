@@ -6,7 +6,9 @@
  <img src="https://img.shields.io/david/Spdino/vbt-table.svg" />
 </p>
 
-#### 说明
+<h1></h1>
+
+### 📅 说明
 - 渲染树形数据时，必须要指定 row-key和isTreeTable属性， row 中包含 children字段。
 - 支持子节点数据异步加载。设置 Table 的 lazy 属性为 true 与加载函数 load 。通过指定 row 中的 hasChildren 字段来指定哪些行是包含子节点。
 - children 与 hasChildren 都可以通过 tree-props 配置。
@@ -14,7 +16,7 @@
 - 其它用法和elment-ui的table组件一样
 
 
-### 新增 Table Attributes
+## 🎲 新增 Table Attributes
 | 参数      | 说明          | 参数 | 类型      | 可选值                           | 默认值  |
 |---------- |-------------- | ---- |---------- |--------------------------------  |-------- |
 | initParentFunc | 用于初始化父级树形表格数据时处理数据| row,treeData | Function | — | — |
@@ -44,7 +46,7 @@
 
 
 
-### 特性
+## ✨ Demo
 ##### 1.大数据支持
 - 效果
 ![images command](public/1.gif)
@@ -58,7 +60,7 @@
 - 效果
 ![images command](public/3.gif)
 
-##### Demo
+## 🐶 code
 ```
 <template>
     <vbt-table border
@@ -154,4 +156,6 @@ export default {
 </script>
 
 ```
+## Show your support
 
+Give a ⭐️ if this project helped you!
