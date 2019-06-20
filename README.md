@@ -86,6 +86,7 @@
                row-key="id"
                size="mini"
                isBigData
+               isTreeTable
                lazy
                :load="load"
                highlight-hover-row
