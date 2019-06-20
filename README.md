@@ -8,7 +8,7 @@
 - 渲染树形数据时，必须要指定 row-key和isTreeTable属性， row 中包含 children字段。
 - 支持子节点数据异步加载。设置 Table 的 lazy 属性为 true 与加载函数 load 。通过指定 row 中的 hasChildren 字段来指定哪些行是包含子节点。
 - children 与 hasChildren 都可以通过 tree-props 配置。
-- 大数据滚动渲染需指定isBigData属性，此时自动支持树形表格，不需要指定isTreeTable属性
+- 大数据滚动渲染需指定isBigData属性,支持树形表格大数据。
 - 其它用法和elment-ui的table组件一样
 
 
