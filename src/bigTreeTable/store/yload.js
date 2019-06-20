@@ -137,12 +137,12 @@ export default {
 
     getTableData(isUpdate) {
       const { scrollYStore } = this.states;
-      let { yFulldatas } = this.states;
+      let { yFulldatas,isTreeTable } = this.states;
 
       this.updateScrollYSpace();
 
-      if (isUpdate) {
-        yFulldatas = this.initParentTreeData(yFulldatas);
+      if (isUpdate && isTreeTable) {
+        this.initParentTreeData(yFulldatas);
       }
 
       this.states.data = yFulldatas.slice(

@@ -2,12 +2,11 @@
   <div class="wrap">
     <vbt-table border
                stripe
-               :initParentFunc="initParentFunc"
-               :formateChildFunc="formateChildFunc"
                row-key="id"
                size="mini"
-               isBigData
+               isTreeTable
                lazy
+               :formateChildFunc="formateChildFunc"
                :load="load"
                highlight-hover-row
                max-height="600"
@@ -105,7 +104,7 @@ export default {
   },
 
   created() {
-    this.tableData = mockData(1000)
+    this.tableData = mockData(10)
   },
 
   methods: {
@@ -114,12 +113,13 @@ export default {
     },
     // 设置父级初始值
     initParentFunc(row) {
-      console.log(row)
+      this.$set(row,'a','test')
     },
 
-    formateChildFunc(row, parent) {
-      if (parent.name) row.name = parent.name
+    formateChildFunc(row,parent) {
+      if(parent.name && !row.name) row.name = parent.name
     },
+
 
     load(row, resolve) {
       resolve(mockData(15, `${row.id}000`))

@@ -17,27 +17,38 @@ export default {
   },
 
   methods: {
-    initParentTreeData(data) {
+    initParentTreeData(data,noBigData) {
       const { initParentFunc, rowKey } = this.table;
-      const {treeData} = this.states
-      const res = {}
+      const { treeData } = this.states;
+      if(!noBigData) {
+        this.states.scrollYLoad = false;
+      }
       
+
       data.forEach(row => {
-        const id = row[rowKey]
-         res[id] = {
-          expanded: false,
+        const id = row[rowKey];
+        const res ={
+          expanded: treeData[id] ? treeData[id].expanded : false,
           level: 0
         }
-        if(treeData[id]) {
-          res[id].loading = treeData[id].loading
-          res[id].loaded = treeData[id].loaded
+        if (treeData[id]) {
+          res.loading = treeData[id].loading;
+          res.loaded = treeData[id].loaded;
         }
+        this.$set(treeData,id,res)
 
-        if (initParentFunc) initParentFunc(row,treeData);
+        if (initParentFunc) initParentFunc(row, treeData);
+        if (res.expanded) {
+          this.$nextTick().then(() => {
+          this.uptateYfullData(row, true);
+          })  
+        }
       });
-      this.states.treeData = res
+      if(!noBigData) {
+        this.states.scrollYLoad = true;
+      }
 
-      return data;
+      return data
     },
 
     toggleTreeExpansion(row, expanded) {
