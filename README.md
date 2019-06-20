@@ -1,8 +1,10 @@
- # vbt-Table 
- ###### 一款基于element-ui(2.9.1)扩展的支持树形表格的大数据表格组件
 
-![Build Status](https://img.shields.io/bundlephobia/minzip/vbt-table.svg)
-![dependencies Status](https://img.shields.io/david/Spdino/vbt-table.svg)
+<h1 align="center">Welcome to vbt-Table  👋</h1>
+<p align="center">一款基于element-ui(2.9.1)扩展的支持树形表格的大数据表格组件</p> 
+<p align="center">
+ <img src="https://img.shields.io/bundlephobia/minzip/vbt-table.svg" />
+ <img src="https://img.shields.io/david/Spdino/vbt-table.svg" />
+</p>
 
 #### 说明
 - 渲染树形数据时，必须要指定 row-key和isTreeTable属性， row 中包含 children字段。
