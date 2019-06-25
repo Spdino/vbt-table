@@ -1,8 +1,8 @@
 {
   "name": "vbt-table",
-  "version": "0.1.7",
+  "version": "0.1.9",
   "license": "MIT",
-  "main": "lib/index.common.js",
+  "main": "lib/index.umd.min.js",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
