@@ -179,6 +179,7 @@ export default {
         let realIndex = scrollYStore.startIndex + index;
         if (isExpanded) {
           TreeNodeMap.forEach(item => {
+            if (formateChildFunc) formateChildFunc(item, row, treeData);
             const id = item[rowKey];
             const res = {
               parent: row,
@@ -190,7 +191,6 @@ export default {
               res.loaded = treeData[id].loaded;
             }
             this.$set(treeData, id, res);
-            if (formateChildFunc) formateChildFunc(item, row, treeData);
 
             realIndex++;
             yFulldatas.splice(realIndex, 0, item);

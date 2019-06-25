@@ -26,6 +26,7 @@ export default {
       
 
       data.forEach(row => {
+        if (initParentFunc) initParentFunc(row, treeData);
         const id = row[rowKey];
         const res ={
           expanded: treeData[id] ? treeData[id].expanded : false,
@@ -36,8 +37,7 @@ export default {
           res.loaded = treeData[id].loaded;
         }
         this.$set(treeData,id,res)
-
-        if (initParentFunc) initParentFunc(row, treeData);
+        
         if (res.expanded) {
           this.$nextTick().then(() => {
           this.uptateYfullData(row, true);
