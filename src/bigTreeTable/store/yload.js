@@ -25,7 +25,11 @@ export default {
 
   methods: {
     execYload(datas) {
+      let {scrollYRenderConfig} = this.table
+      let { scrollYStore } = this.states
+
       this.states.yFulldatas = datas;
+      this.states.scrollYStore = Object.assign(scrollYStore,scrollYRenderConfig)
       this.getTableData(true);
     },
 

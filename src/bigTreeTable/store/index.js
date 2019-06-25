@@ -10,10 +10,6 @@ Watcher.prototype.mutations = {
     this.execQuery()
     if (dataInstanceChanged ) {
       if(states.scrollYLoad) {
-        // if(states.isTreeTable) {
-        //   states.isTreeTable = false
-        //   console.warn('[vbt-table]:isBigdata自动支持树形表格,不需要额外添加isTreeTable')
-        // }
         this.execYload(data)
       }else if(states.isTreeTable) {
         states.data = this.initParentTreeData(data,true)

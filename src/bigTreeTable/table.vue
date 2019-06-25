@@ -190,7 +190,7 @@ export default {
   props: {
     data: {
       type: Array,
-      default: function() {
+      default: function () {
         return []
       }
     },
@@ -283,13 +283,15 @@ export default {
 
     load: Function,
 
-    isBigData:Boolean,
+    isBigData: Boolean,
 
-    isTreeTable:Boolean,
+    isTreeTable: Boolean,
 
     initParentFunc: Function,
 
     formateChildFunc: Function,
+
+    scrollYRenderConfig: Object
   },
 
   components: {
@@ -593,8 +595,8 @@ export default {
       lazy: this.lazy,
       lazyColumnIdentifier: hasChildren,
       childrenColumnName: children,
-      scrollYLoad:this.isBigData,
-      isTreeTable:this.isTreeTable
+      scrollYLoad: this.isBigData,
+      isTreeTable: this.isTreeTable
     })
     const layout = new TableLayout({
       store: this.store,

@@ -23,6 +23,7 @@
 | formateChildFunc  | 展示子级树形表格数据时处理数据 | row,parentRow,treeData | Function | — | — |
 | isBigData | 大数据滚动渲染| — | Boolean | — | — |
 | isTreeTable  | 树形表格 | — | Boolean | — | — |
+| scrollYRenderConfig  | 大数据滚动的配置选项 | — | Object | renderSize：一次渲染多少条数据；offsetSize：预渲染多少条数据 | { renderSize: 30, offsetSize: 10 } |
 
 - initParentFunc方法，用于初始化父级树形表格数据时处理数据，抛出当前处理的父级rowData
 
