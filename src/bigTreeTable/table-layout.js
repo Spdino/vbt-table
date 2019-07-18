@@ -105,7 +105,7 @@ class TableLayout {
     this.updateScrollY()
     this.notifyObservers('scrollable')
     if (this.store.states.scrollYLoad) {
-      this.store.computeScrollLoad()
+      Vue.nextTick(() => this.store.computeScrollLoad())
     }
   }
 

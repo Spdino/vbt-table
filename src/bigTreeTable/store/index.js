@@ -8,11 +8,11 @@ Watcher.prototype.mutations = {
     states._data = data
 
     this.execQuery()
-    if (dataInstanceChanged ) {
-      if(states.scrollYLoad) {
+    if (dataInstanceChanged) {
+      if (states.scrollYLoad) {
         this.execYload(data)
-      }else if(states.isTreeTable) {
-        states.data = this.initParentTreeData(data,true)
+      } else if (states.isTreeTable) {
+        states.data = this.initParentTreeData(data, true)
       }
     }
     // 数据变化，更新部分数据。

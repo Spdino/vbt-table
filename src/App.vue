@@ -3,16 +3,16 @@
     <vbt-table border
                stripe
                row-key="id"
+               default-expand-all
                size="mini"
+               isBigData
                isTreeTable
-               lazy
-               :formateChildFunc="formateChildFunc"
-               :load="load"
                highlight-hover-row
                max-height="600"
                :data="tableData">
       <vbt-table-column v-for="item in columns"
                         show-overflow-tooltip
+                        expanded
                         :key="item.value"
                         :prop="item.value"
                         :label="item.label"
@@ -28,13 +28,13 @@
       </vbt-table-column>
     </vbt-table>
 
-    <el-button type="primary" @click="save">保存</el-button>
   </div>
 </template>
 
 <script>
 import vbtTable from './bigTreeTable/table'
 import vbtTableColumn from './bigTreeTable/table-column.js'
+import { setTimeout } from 'timers';
 
 function mockData(num, cId) {
   let fullIndex = 0
@@ -104,7 +104,7 @@ export default {
   },
 
   created() {
-    this.tableData = mockData(10)
+    this.tableData = mockData(100)
   },
 
   methods: {
@@ -122,7 +122,10 @@ export default {
 
 
     load(row, resolve) {
-      resolve(mockData(15, `${row.id}000`))
+      setTimeout(() => {
+        resolve(mockData(15, `${row.id}000`))
+      },100)
+      
     }
   }
 }

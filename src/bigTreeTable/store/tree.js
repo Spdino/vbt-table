@@ -1,4 +1,4 @@
-import { getRowIdentity } from "../util";
+import { getRowIdentity } from '../util'
 
 export default {
   data() {
@@ -10,103 +10,110 @@ export default {
         lazy: false,
         treeData: {},
         lazyTreeNodeMap: {},
-        lazyColumnIdentifier: "hasChildren",
-        childrenColumnName: "children"
+        lazyColumnIdentifier: 'hasChildren',
+        childrenColumnName: 'children'
       }
-    };
+    }
   },
 
   methods: {
-    initParentTreeData(data,noBigData) {
-      const { initParentFunc, rowKey } = this.table;
-      const { treeData } = this.states;
-      if(!noBigData) {
-        this.states.scrollYLoad = false;
-      }
-      
+    initParentTreeData(data) {
+      const { rowKey } = this.table
+      const { treeData,defaultExpandAll } = this.states
 
       data.forEach(row => {
-        if (initParentFunc) initParentFunc(row, treeData);
-        const id = row[rowKey];
-        const res ={
-          expanded: treeData[id] ? treeData[id].expanded : false,
-          level: 0
+        const id = row[rowKey]
+
+        const res = {
+          expanded: defaultExpandAll ? true : treeData[id] ? treeData[id].expanded : false,
+          level: treeData[id] ? treeData[id].level : 0
         }
-        if (treeData[id]) {
-          res.loading = treeData[id].loading;
-          res.loaded = treeData[id].loaded;
-        }
-        this.$set(treeData,id,res)
         
-        if (res.expanded) {
-          this.$nextTick().then(() => {
-          this.uptateYfullData(row, true);
-          })  
+        if (id && treeData[id]) {
+          res.loading = treeData[id].loading
+          res.loaded = treeData[id].loaded
         }
-      });
-      if(!noBigData) {
-        this.states.scrollYLoad = true;
-      }
+        this.$set(treeData, id, res)
+      })
 
       return data
     },
 
-    toggleTreeExpansion(row, expanded) {
-      this.assertRowKey();
+    initChildTreeData(data, parent) {
+      const { rowKey } = this.table
+      const { treeData,defaultExpandAll } = this.states
+      const id = data[rowKey]
+      const parentId = parent[rowKey]
 
-      const { rowKey, treeData } = this.states;
-      const id = getRowIdentity(row, rowKey);
-      const data = id && treeData[id];
-      const oldExpanded = treeData[id].expanded;
-      if (id && data && "expanded" in data) {
-        expanded = typeof expanded === "undefined" ? !data.expanded : expanded;
-        treeData[id].expanded = expanded;
+      const res = {
+        parent,
+        level: treeData[parentId].level + 1,
+        expanded:defaultExpandAll ? true : false
+      }
+      if (id && treeData[id]) {
+        res.loading = treeData[id].loading
+        res.loaded = treeData[id].loaded
+      }
+     
+      this.$set(treeData, id, res)
+    },
+
+    toggleTreeExpansion(row, expanded) {
+      this.assertRowKey()
+
+      const { rowKey, treeData } = this.states
+      const id = getRowIdentity(row, rowKey)
+      const data = id && treeData[id]
+      const oldExpanded = treeData[id].expanded
+      if (id && data && 'expanded' in data) {
+        expanded = typeof expanded === 'undefined' ? !data.expanded : expanded
+        treeData[id].expanded = expanded
         if (oldExpanded !== expanded) {
-          this.table.$emit("expand-change", row, expanded);
+          this.table.$emit('expand-change', row, expanded)
         }
       }
 
-      this.uptateYfullData(row, expanded);
+      this.uptateYfullData(row, expanded)
     },
 
     loadOrToggle(row) {
-      this.assertRowKey();
-      const { lazy, lazyColumnIdentifier } = this.states;
-      const { rowKey, treeData } = this.states;
-      const id = getRowIdentity(row, rowKey);
-      const data = id && treeData[id];
-      if (lazy && row[lazyColumnIdentifier] && !data["loaded"]) {
-        this.loadData(row);
+      this.assertRowKey()
+      const { lazy, lazyColumnIdentifier } = this.states
+      const { rowKey, treeData } = this.states
+      const id = getRowIdentity(row, rowKey)
+      const data = id && treeData[id]
+      if (lazy && row[lazyColumnIdentifier] && !data['loaded']) {
+        this.loadData(row)
       } else {
-        this.toggleTreeExpansion(row);
+        this.toggleTreeExpansion(row)
       }
-      this.$nextTick(this.updateTableScrollY);
+      this.$nextTick(this.updateTableScrollY)
     },
 
     loadData(row) {
-      const { load } = this.table;
-      const { rowKey, treeData } = this.states;
-      const id = getRowIdentity(row, rowKey);
-      const dataObj = id && treeData[id];
+      const { load } = this.table
+      const { rowKey, treeData } = this.states
+      const id = getRowIdentity(row, rowKey)
+      const dataObj = id && treeData[id]
 
       if (load) {
-        this.$set(dataObj, "loading", true);
+        this.$set(dataObj, 'loading', true)
         load(row, data => {
           if (!Array.isArray(data)) {
-            throw new Error("[ElTable] data must be an array");
+            throw new Error('[ElTable] data must be an array')
           }
-          this.$set(dataObj, "loading", false);
-          this.$set(dataObj, "loaded", true);
-          dataObj.expanded = true;
+          this.$set(dataObj, 'loading', false)
+          this.$set(dataObj, 'loaded', true)
+          dataObj.expanded = true
 
           if (data.length) {
-            this.states.lazyTreeNodeMap[id] = data;
-            this.uptateYfullData(row, true);
+            this.states.lazyTreeNodeMap[id] = data
+            this.uptateYfullData(row, true)
           }
 
-          this.table.$emit("expand-change", row, true);
-        });
+          this.table.$emit('expand-change', row, true)
+        })
       }
     }
   }
-};
+}
