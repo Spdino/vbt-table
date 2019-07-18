@@ -1,6 +1,6 @@
 {
   "name": "vbt-table",
-  "version": "0.1.9",
+  "version": "1.0.1",
   "license": "MIT",
   "main": "lib/index.umd.min.js",
   "scripts": {
@@ -11,7 +11,7 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
-    "element-ui": "^2.9.1",
+    "element-ui": "^2.10.1",
     "vue": "^2.6.6"
   },
   "devDependencies": {
