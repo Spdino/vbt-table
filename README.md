@@ -25,22 +25,22 @@
 | isTreeTable  | 树形表格 | — | Boolean | — | — |
 | scrollYRenderConfig  | 大数据滚动的配置选项 | — | Object | renderSize：一次渲染多少条数据；offsetSize：预渲染多少条数据 | { renderSize: 30, offsetSize: 10 } |
 
-- initParentFunc方法，用于初始化父级树形表格数据时处理数据，抛出当前处理的父级rowData
+- initParentFunc方法，用于初始化父级树形表格数据时处理数据，抛出当前处理的父级rowData和树形设置属性对象（当传入的data发生变化时执行）
 
 ```
  // 设置父级初始值
-    initParentFunc(row) {
-      console
-        row.disabled = true.log(row)
+    initParentFunc(row,treeData) {
+      console.log(row，treeData)
+        row.disabled = true
     },
 ```
 
-- formateChildFunc方法，用于初始化子级树形表格数据时处理数据，抛出当前处理的子级rowData和parentRow
+- formateChildFunc方法，用于初始化子级树形表格数据时处理数据，抛出当前处理的子级rowData和parentRow，treeData（当展开子级动作发生时执行）
 
 
 ```
-    formateChildFunc(row, parent) {
-     console.log(row,parent)
+    formateChildFunc(row, parent，treeData) {
+     console.log(row,parent，treeData)
      if(parent.name) row.name = parent.name
     },
 ```
