@@ -3,10 +3,10 @@
     <vbt-table border
                stripe
                row-key="id"
-               default-expand-all
                size="mini"
                isBigData
                isTreeTable
+               show-summary
                highlight-hover-row
                max-height="600"
                :data="tableData">
@@ -34,7 +34,6 @@
 <script>
 import vbtTable from './bigTreeTable/table'
 import vbtTableColumn from './bigTreeTable/table-column.js'
-import { setTimeout } from 'timers';
 
 function mockData(num, cId) {
   let fullIndex = 0
@@ -57,6 +56,7 @@ function mockData(num, cId) {
   }
   return list
 }
+
 export default {
   components: { vbtTable, vbtTableColumn },
 
@@ -76,12 +76,12 @@ export default {
         },
         {
           label: 'sex',
-          value: 'Sex',
+          value: 'sex',
           width: '200'
         },
         {
           label: 'age',
-          value: 'Age',
+          value: 'age',
           width: '200'
         },
         {
@@ -104,28 +104,25 @@ export default {
   },
 
   created() {
-    this.tableData = mockData(100)
+    this.tableData = mockData(10)
   },
 
   methods: {
-    save() {
-      console.log(this.tableData)
-    },
     // 设置父级初始值
     initParentFunc(row) {
-      this.$set(row,'a','test')
+      this.$set(row, 'a', 'test')
     },
 
-    formateChildFunc(row,parent) {
-      if(parent.name && !row.name) row.name = parent.name
+    formateChildFunc(row, parent) {
+      if (parent.name && !row.name) row.name = parent.name
     },
 
 
     load(row, resolve) {
       setTimeout(() => {
         resolve(mockData(15, `${row.id}000`))
-      },100)
-      
+      }, 100)
+
     }
   }
 }
@@ -133,7 +130,7 @@ export default {
 
 <style scoped>
 .wrap {
-  width: 1200px;
+  width: 100%;
   margin: 20px auto;
 }
 </style>

@@ -96,6 +96,8 @@ export default {
      * 纵向 Y 滚动渲染事件处理
      */
     triggerScrollYEvent: debounce(20, function(evnt) {
+      const scrollBodyElem = evnt.target
+      const scrollTop = scrollBodyElem.scrollTop
       const { yFulldatas: tableFullData, scrollYStore } = this.states
       const {
         startIndex,
@@ -104,8 +106,6 @@ export default {
         visibleSize,
         rowHeight
       } = scrollYStore
-      const scrollBodyElem = evnt.target
-      const scrollTop = scrollBodyElem.scrollTop
       const toVisibleIndex = Math.ceil(scrollTop / rowHeight)
 
       if (scrollYStore.visibleIndex !== toVisibleIndex) {
