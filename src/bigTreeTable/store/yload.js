@@ -49,22 +49,23 @@ export default {
       let arr = []
 
       datas.forEach(item => {
+        const id = item[rowKey]
+        const hasChild = item[childrenColumnName] && item[childrenColumnName].length >0
         
-        if (item[childrenColumnName] && item[childrenColumnName].length) {
+        if (hasChild) {
           if (initParentFunc) initParentFunc(item, treeData)
         } else if (parent) {
           if (formateChildFunc) formateChildFunc(item, parent, treeData)
           this.initChildTreeData(item, parent)
         }
-        const id = item[rowKey]
+        
         arr.push(item)
 
         if (
           id &&
           treeData[id] &&
           treeData[id].expanded &&
-          item[childrenColumnName] &&
-          item[childrenColumnName].length > 0
+          hasChild
         ) {
           arr = arr.concat(this.getyFulldatas(item[childrenColumnName], item))
         }
@@ -185,7 +186,7 @@ export default {
       )
     },
 
-    uptateYfullData(row, isExpanded, isChild) {
+    uptateYfullData(row, isExpanded) {
       const {
         data,
         scrollYLoad,
@@ -211,6 +212,7 @@ export default {
       }
       if (TreeNodeMap) {
         let realIndex = scrollYStore.startIndex + index
+        
         if (isExpanded) {
           TreeNodeMap.forEach(item => {
             if (formateChildFunc) formateChildFunc(item, row, treeData)
@@ -219,16 +221,16 @@ export default {
             yFulldatas.splice(realIndex, 0, item)
           })
         } else {
-          if (!isChild) {
-            realIndex += 1
-          }
-          yFulldatas.splice(realIndex, TreeNodeMap.length)
+          let realTreeDodeMapLength =  TreeNodeMap.length
+
           TreeNodeMap.forEach(item => {
             const id = item[rowKey]
             if (id && treeData[id] && treeData[id].expanded === true) {
-              this.uptateYfullData(item, false, true)
+              realTreeDodeMapLength+=item.children.length
             }
           })
+
+          yFulldatas.splice(realIndex+1, realTreeDodeMapLength)
         }
 
         if (scrollYLoad) {

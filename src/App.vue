@@ -35,24 +35,27 @@
 import vbtTable from './bigTreeTable/table'
 import vbtTableColumn from './bigTreeTable/table-column.js'
 
-function mockData(num, cId) {
-  let fullIndex = 0
+let _id = 0
+
+function mockData(num, deep = 0) {
   const list = []
+
   for (let index = 0; index < num; index++) {
-    fullIndex++
-    cId && (cId = Number(cId) + 1)
-    list.push({
-      id: cId || fullIndex,
-      // hasChildren: cId ? false : true,
-      children: !cId ? mockData(15, `${fullIndex}0000000`) : [],
-      role: 'role_' + fullIndex,
+    const id = ++_id
+    const mokeObj = {
+      id,
+      role: 'role_' + id,
       language: index % 2 === 0 ? 'zh_CN' : 'en_US',
-      name: !cId ? 'name_' + fullIndex : '',
+      name: 'name_' + id,
       sex: index % 3 ? '男' : '女',
       age: 18,
       rate: 5,
-      address: `地址 地址地址 地址地址 址地址址地址 址地址 址地址  址地址 址地址  址地址 址地址址地址址地址 地址${index}`
-    })
+      address: `地址 地址地址 地址地址 址地址址地址 址地址 址地址  址地址 址地址  址地址 址地址址地址址地址 地址${id}`
+    }
+    if (deep > 0) {
+      mokeObj.children = mockData(10, deep - 1)
+    }
+    list.push(mokeObj)
   }
   return list
 }
@@ -104,23 +107,23 @@ export default {
   },
 
   created() {
-    this.tableData = mockData(10)
+    this.tableData = mockData(10,2)
   },
 
   methods: {
     // 设置父级初始值
-    initParentFunc(row) {
-      this.$set(row, 'a', 'test')
+    initParentFunc(row, treeData) {
+      console.log(row, treeData)
     },
 
-    formateChildFunc(row, parent) {
-      if (parent.name && !row.name) row.name = parent.name
+    formateChildFunc(row, parent, treeData) {
+      console.log(row, parent, treeData)
     },
 
 
     load(row, resolve) {
       setTimeout(() => {
-        resolve(mockData(15, `${row.id}000`))
+        resolve(mockData(15, 2))
       }, 100)
 
     }
