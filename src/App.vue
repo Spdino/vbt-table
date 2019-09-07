@@ -10,6 +10,9 @@
                highlight-hover-row
                max-height="600"
                :data="tableData">
+               <vbt-table-column type="index" width="100">
+                 
+               </vbt-table-column>
       <vbt-table-column v-for="item in columns"
                         show-overflow-tooltip
                         expanded
@@ -107,7 +110,7 @@ export default {
   },
 
   created() {
-    this.tableData = mockData(10,2)
+    this.tableData = mockData(5,5)
   },
 
   methods: {

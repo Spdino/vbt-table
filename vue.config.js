@@ -9,7 +9,8 @@ module.exports = {
   },
   chainWebpack(config) {
     config.output
+      .set("library", "vbtTable")
+      .set("libraryTarget", "umd")
       .set("libraryExport", "default")
-      .set("library", "vbtTable");
   }
 };
