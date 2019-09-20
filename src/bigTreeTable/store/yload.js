@@ -25,14 +25,8 @@ export default {
 
   methods: {
     execYload(datas) {
-      const {
-        table,
-        states,
-        initParentTreeData,
-        getyFulldatas,
-        getTableData
-      } = this;
-      const { scrollYRenderConfig } = table;
+      const { states, initParentTreeData, getyFulldatas, getTableData } = this;
+      const { scrollYRenderConfig } = this.table;
       const { scrollYStore, isTreeTable } = states;
 
       states.scrollYStore = Object.assign(scrollYStore, scrollYRenderConfig);
@@ -183,69 +177,94 @@ export default {
       );
     },
 
+    uptateExpand_yFulldatas({ TreeNodeMap, row, realIndex, yFulldatas }) {
+      const { formateChildFunc } = this.table;
+      const { treeData } = this.states;
+
+      TreeNodeMap.forEach(item => {
+        if (formateChildFunc) formateChildFunc(item, row, treeData);
+        this.initChildTreeData(item, row);
+        realIndex++;
+        yFulldatas.splice(realIndex, 0, item);
+      });
+    },
+
+    updateShrink_yFulldatas({ TreeNodeMap, realIndex, yFulldatas }) {
+      const { table, states } = this;
+      const { rowKey } = table;
+      const { treeData } = states;
+      let realTreeDodeMapLength = TreeNodeMap.length;
+
+      const isExpanded = function(item) {
+        const id = item[rowKey];
+        return id && treeData[id] && treeData[id].expanded === true;
+      };
+      const computedRealTreeDodeMapLength = function(treeMap) {
+        treeMap.forEach(item => {
+          const isValid =
+            Array.isArray(item.children) &&
+            item.children.length > 0 &&
+            isExpanded(item);
+
+          if (isValid) {
+            computedRealTreeDodeMapLength(item.children);
+            realTreeDodeMapLength += item.children.length;
+          }
+        });
+      };
+
+      computedRealTreeDodeMapLength(TreeNodeMap, realTreeDodeMapLength);
+      yFulldatas.splice(realIndex + 1, realTreeDodeMapLength);
+    },
+
+    findDataIndex(data, row, rowKey) {
+      let index;
+
+      for (let i = 0; i < data.length; i++) {
+        if (data[i][rowKey] === row[rowKey]) {
+          index = i;
+          break;
+        }
+      }
+
+      return index;
+    },
+
     uptateYfullData(row, isExpanded) {
+      const {
+        states,
+        uptateExpand_yFulldatas,
+        updateShrink_yFulldatas,
+        findDataIndex
+      } = this;
       const {
         data,
         scrollYLoad,
         isTreeTable,
         childrenColumnName,
         lazyTreeNodeMap,
-        scrollYStore,
-        treeData
-      } = this.states;
-      const yFulldatas =
-        isTreeTable && !scrollYLoad ? data : this.states.yFulldatas;
-      const { formateChildFunc, rowKey } = this.table;
+        scrollYStore
+      } = states;
+      const { rowKey } = this.table;
       const parentId = getRowIdentity(row, rowKey);
       const TreeNodeMap = lazyTreeNodeMap[parentId] || row[childrenColumnName];
-      let index;
 
-      for (let i = 0; i < data.length; i++) {
-        const item = data[i];
-        if (item[rowKey] === row[rowKey]) {
-          index = i;
-          break;
-        }
-      }
-      if (TreeNodeMap) {
-        let realIndex = scrollYStore.startIndex + index;
+      if (!TreeNodeMap) return;
 
-        if (isExpanded) {
-          TreeNodeMap.forEach(item => {
-            if (formateChildFunc) formateChildFunc(item, row, treeData);
-            this.initChildTreeData(item, row);
-            realIndex++;
-            yFulldatas.splice(realIndex, 0, item);
-          });
-        } else {
-          const {doLayout} = this.table
-          let realTreeDodeMapLength = TreeNodeMap.length;
-          const isExpanded = function(item) {
-            const id = item[rowKey];
-            return id && treeData[id] && treeData[id].expanded === true;
-          };
-          const computedRealTreeDodeMapLength = function(treeMap) {
-            treeMap.forEach(item => {
-              const isValid =
-                Array.isArray(item.children) &&
-                item.children.length > 0 &&
-                isExpanded(item);
+      const yFulldatas = isTreeTable && !scrollYLoad ? data : states.yFulldatas;
+      let realIndex =
+        scrollYStore.startIndex + findDataIndex(data, row, rowKey);
+      const paramets = { TreeNodeMap, row, realIndex, yFulldatas };
 
-              if (isValid) {
-                computedRealTreeDodeMapLength(item.children);
-                realTreeDodeMapLength += item.children.length;
-              }
-            });
-          };
+      isExpanded
+        ? uptateExpand_yFulldatas(paramets)
+        : updateShrink_yFulldatas(paramets);
 
-          computedRealTreeDodeMapLength(TreeNodeMap, realTreeDodeMapLength);
-          yFulldatas.splice(realIndex + 1, realTreeDodeMapLength);
-          doLayout()
-        }
-
-        if (scrollYLoad) {
-          this.getTableData();
-        }
+      if (scrollYLoad) {
+        this.getTableData();
+        this.$nextTick(() => {
+          this.updateScrollYSpace();
+        })
       }
     }
   }

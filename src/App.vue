@@ -10,12 +10,11 @@
                highlight-hover-row
                max-height="600"
                :data="tableData">
-               <vbt-table-column type="index" width="100">
-                 
-               </vbt-table-column>
+      <vbt-table-column type="index"
+                        width="100">
+      </vbt-table-column>
       <vbt-table-column v-for="item in columns"
                         show-overflow-tooltip
-                        expanded
                         :key="item.value"
                         :prop="item.value"
                         :label="item.label"
@@ -110,7 +109,9 @@ export default {
   },
 
   created() {
-    this.tableData = mockData(5,5)
+    setTimeout(() => {
+        this.tableData = mockData(100, 2)
+      }, 0)
   },
 
   methods: {
@@ -122,7 +123,6 @@ export default {
     formateChildFunc(row, parent, treeData) {
       console.log(row, parent, treeData)
     },
-
 
     load(row, resolve) {
       setTimeout(() => {
